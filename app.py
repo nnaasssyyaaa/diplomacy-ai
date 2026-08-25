@@ -51,16 +51,328 @@ elif section == "🎲 Классические игры":
     st.info("🚧 Раздел находится в разработке.")
 
 # ---------- АНАЛИЗАТОР ----------
+# ---------- АНАЛИЗАТОР ----------
 elif section == "🧮 Анализатор матриц":
     st.header("🧮 Анализатор матриц 2×2")
 
     st.write(
-        "Введите выигрыши двух игроков. "
-        "Позже приложение автоматически найдёт равновесие Нэша."
+        "Введите выигрыши двух игроков для каждой комбинации стратегий."
     )
 
-    st.info("🚧 Математический анализатор добавим следующим этапом.")
+    # Имена игроков
+    col1, col2 = st.columns(2)
 
+    with col1:
+        player1 = st.text_input(
+            "Игрок 1",
+            "Казахстан"
+        )
+
+    with col2:
+        player2 = st.text_input(
+            "Игрок 2",
+            "Кыргызстан"
+        )
+
+    st.divider()
+
+    # Названия стратегий
+    st.subheader("🎯 Стратегии")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        p1_strategy1 = st.text_input(
+            f"{player1}: стратегия 1",
+            "Сотрудничать"
+        )
+
+        p1_strategy2 = st.text_input(
+            f"{player1}: стратегия 2",
+            "Не сотрудничать"
+        )
+
+    with col2:
+        p2_strategy1 = st.text_input(
+            f"{player2}: стратегия 1",
+            "Сотрудничать"
+        )
+
+        p2_strategy2 = st.text_input(
+            f"{player2}: стратегия 2",
+            "Не сотрудничать"
+        )
+
+    st.divider()
+
+    st.subheader("💰 Матрица выигрышей")
+
+    st.write(
+        "В каждой клетке укажите: "
+        "(выигрыш Игрока 1, выигрыш Игрока 2)"
+    )
+
+    # Заголовки матрицы
+    col1, col2, col3 = st.columns([2, 2, 2])
+
+    with col2:
+        st.markdown(f"**{p2_strategy1}**")
+
+    with col3:
+        st.markdown(f"**{p2_strategy2}**")
+
+    # Первая строка
+    col1, col2, col3 = st.columns([2, 2, 2])
+
+    with col1:
+        st.markdown(f"**{p1_strategy1}**")
+
+    with col2:
+        a11 = st.number_input(
+            "Клетка 1",
+            value=3.0,
+            key="a11"
+        )
+
+        b11 = st.number_input(
+            "Выигрыш второго игрока",
+            value=3.0,
+            key="b11"
+        )
+
+    with col3:
+        a12 = st.number_input(
+            "Клетка 2",
+            value=0.0,
+            key="a12"
+        )
+
+        b12 = st.number_input(
+            "Выигрыш второго игрока",
+            value=5.0,
+            key="b12"
+        )
+
+    # Вторая строка
+    col1, col2, col3 = st.columns([2, 2, 2])
+
+    with col1:
+        st.markdown(f"**{p1_strategy2}**")
+
+    with col2:
+        a21 = st.number_input(
+            "Клетка 3",
+            value=5.0,
+            key="a21"
+        )
+
+        b21 = st.number_input(
+            "Выигрыш второго игрока",
+            value=0.0,
+            key="b21"
+        )
+
+    with col3:
+        a22 = st.number_input(
+            "Клетка 4",
+            value=1.0,
+            key="a22"
+        )
+
+        b22 = st.number_input(
+            "Выигрыш второго игрока",
+            value=1.0,
+            key="b22"
+        )
+
+    st.divider()
+
+    if st.button(
+        "🧮 Рассчитать равновесие Нэша",
+        use_container_width=True
+    ):
+
+        # Матрица выигрышей
+        payoffs = [
+            [(a11, b11), (a12, b12)],
+            [(a21, b21), (a22, b22)]
+        ]
+
+        # Поиск чистых равновесий
+        equilibria = []
+
+        # Клетка (1,1)
+        if a11 >= a21 and b11 >= b12:
+            equilibria.append(
+                (
+                    p1_strategy1,
+                    p2_strategy1,
+                    a11,
+                    b11
+                )
+            )
+
+        # Клетка (1,2)
+        if a12 >= a22 and b12 >= b11:
+            equilibria.append(
+                (
+                    p1_strategy1,
+                    p2_strategy2,
+                    a12,
+                    b12
+                )
+            )
+
+        # Клетка (2,1)
+        if a21 >= a11 and b21 >= b22:
+            equilibria.append(
+                (
+                    p1_strategy2,
+                    p2_strategy1,
+                    a21,
+                    b21
+                )
+            )
+
+        # Клетка (2,2)
+        if a22 >= a12 and b22 >= b21:
+            equilibria.append(
+                (
+                    p1_strategy2,
+                    p2_strategy2,
+                    a22,
+                    b22
+                )
+            )
+
+        st.subheader("📊 Результат")
+
+        if equilibria:
+
+            st.success(
+                f"Найдено чистых равновесий Нэша: "
+                f"{len(equilibria)}"
+            )
+
+            for eq in equilibria:
+
+                strategy1 = eq[0]
+                strategy2 = eq[1]
+                payoff1 = eq[2]
+                payoff2 = eq[3]
+
+                st.write(
+                    f"### 🎯 Равновесие"
+                )
+
+                st.write(
+                    f"**{player1}:** {strategy1}"
+                )
+
+                st.write(
+                    f"**{player2}:** {strategy2}"
+                )
+
+                st.write(
+                    f"💰 Выигрыш {player1}: **{payoff1}**"
+                )
+
+                st.write(
+                    f"💰 Выигрыш {player2}: **{payoff2}**"
+                )
+
+                st.info(
+                    "Ни одному игроку не выгодно "
+                    "односторонне менять свою стратегию."
+                )
+
+        else:
+
+            st.warning(
+                "Чистого равновесия Нэша нет."
+            )
+
+            # Проверяем возможность смешанного равновесия
+
+            denominator_p = (
+                b11 - b12 - b21 + b22
+            )
+
+            denominator_q = (
+                a11 - a12 - a21 + a22
+            )
+
+            if (
+                denominator_p != 0
+                and denominator_q != 0
+            ):
+
+                p = (
+                    b12 - b22
+                ) / denominator_p
+
+                q = (
+                    a21 - a22
+                ) / denominator_q
+
+                if 0 <= p <= 1 and 0 <= q <= 1:
+
+                    st.success(
+                        "🎲 Найдено смешанное равновесие Нэша!"
+                    )
+
+                    st.write(
+                        f"Вероятность стратегии "
+                        f"**{p1_strategy1}** "
+                        f"для {player1}: "
+                        f"**{p:.2%}**"
+                    )
+
+                    st.write(
+                        f"Вероятность стратегии "
+                        f"**{p2_strategy1}** "
+                        f"для {player2}: "
+                        f"**{q:.2%}**"
+                    )
+
+                    expected1 = (
+                        p * q * a11
+                        + p * (1 - q) * a12
+                        + (1 - p) * q * a21
+                        + (1 - p) * (1 - q) * a22
+                    )
+
+                    expected2 = (
+                        p * q * b11
+                        + p * (1 - q) * b12
+                        + (1 - p) * q * b21
+                        + (1 - p) * (1 - q) * b22
+                    )
+
+                    st.write(
+                        f"Ожидаемый выигрыш "
+                        f"{player1}: **{expected1:.2f}**"
+                    )
+
+                    st.write(
+                        f"Ожидаемый выигрыш "
+                        f"{player2}: **{expected2:.2f}**"
+                    )
+
+                else:
+
+                    st.warning(
+                        "Смешанное равновесие "
+                        "с вероятностями от 0 до 1 "
+                        "не найдено."
+                    )
+
+            else:
+
+                st.warning(
+                    "Для данной матрицы стандартное "
+                    "смешанное равновесие не определяется."
+                )
 # ---------- КЕЙСЫ ----------
 elif section == "🇰🇿 Реальные кейсы Казахстана":
     st.header("🇰🇿 Реальные кейсы Казахстана")
