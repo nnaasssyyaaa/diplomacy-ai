@@ -113,77 +113,100 @@ elif section == "🧮 Анализатор матриц":
     )
 
     # Заголовки матрицы
-    col1, col2, col3 = st.columns([2, 2, 2])
+       # ---------- КРАСИВАЯ МАТРИЦА ----------
+    st.subheader("💰 Матрица выигрышей")
 
-    with col2:
-        st.markdown(f"**{p2_strategy1}**")
+    st.caption(
+        "Вводите выигрыш каждого игрока в формате "
+        "отдельных чисел. Первое число — Игрок 1, "
+        "второе — Игрок 2."
+    )
 
-    with col3:
-        st.markdown(f"**{p2_strategy2}**")
+    # Заголовок таблицы
+    h1, h2, h3 = st.columns([2, 3, 3])
 
-    # Первая строка
-    col1, col2, col3 = st.columns([2, 2, 2])
+    with h1:
+        st.write("")
 
-    with col1:
-        st.markdown(f"**{p1_strategy1}**")
+    with h2:
+        st.markdown(f"### {p2_strategy1}")
 
-    with col2:
+    with h3:
+        st.markdown(f"### {p2_strategy2}")
+
+    # Строка 1
+    c1, c2, c3 = st.columns([2, 3, 3])
+
+    with c1:
+        st.markdown(f"### {p1_strategy1}")
+
+    with c2:
+        st.markdown("**Клетка (1,1)**")
         a11 = st.number_input(
-            "Клетка 1",
+            f"{player1} — {p1_strategy1}/{p2_strategy1}",
             value=3.0,
-            key="a11"
+            key="a11_new"
         )
-
         b11 = st.number_input(
-            "Выигрыш второго игрока",
+            f"{player2} — {p1_strategy1}/{p2_strategy1}",
             value=3.0,
-            key="b11"
+            key="b11_new"
         )
 
-    with col3:
+        st.info(f"({a11:.2f}, {b11:.2f})")
+
+    with c3:
+        st.markdown("**Клетка (1,2)**")
         a12 = st.number_input(
-            "Клетка 2",
+            f"{player1} — {p1_strategy1}/{p2_strategy2}",
             value=0.0,
-            key="a12"
+            key="a12_new"
         )
-
         b12 = st.number_input(
-            "Выигрыш второго игрока",
+            f"{player2} — {p1_strategy1}/{p2_strategy2}",
             value=5.0,
-            key="b12"
+            key="b12_new"
         )
 
-    # Вторая строка
-    col1, col2, col3 = st.columns([2, 2, 2])
+        st.info(f"({a12:.2f}, {b12:.2f})")
 
-    with col1:
-        st.markdown(f"**{p1_strategy2}**")
+    # Строка 2
+    c1, c2, c3 = st.columns([2, 3, 3])
 
-    with col2:
+    with c1:
+        st.markdown(f"### {p1_strategy2}")
+
+    with c2:
+        st.markdown("**Клетка (2,1)**")
         a21 = st.number_input(
-            "Клетка 3",
+            f"{player1} — {p1_strategy2}/{p2_strategy1}",
             value=5.0,
-            key="a21"
+            key="a21_new"
         )
-
         b21 = st.number_input(
-            "Выигрыш второго игрока",
+            f"{player2} — {p1_strategy2}/{p2_strategy1}",
             value=0.0,
-            key="b21"
+            key="b21_new"
         )
 
-    with col3:
+        st.info(f"({a21:.2f}, {b21:.2f})")
+
+    with c3:
+        st.markdown("**Клетка (2,2)**")
         a22 = st.number_input(
-            "Клетка 4",
+            f"{player1} — {p1_strategy2}/{p2_strategy2}",
             value=1.0,
-            key="a22"
+            key="a22_new"
+        )
+        b22 = st.number_input(
+            f"{player2} — {p1_strategy2}/{p2_strategy2}",
+            value=1.0,
+            key="b22_new"
         )
 
-        b22 = st.number_input(
-            "Выигрыш второго игрока",
-            value=1.0,
-            key="b22"
-        )
+        st.info(f"({a22:.2f}, {b22:.2f})")
+
+    st.divider()
 
     st.divider()
 
