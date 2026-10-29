@@ -9,6 +9,34 @@ st.set_page_config(
     page_icon="🌐",
     layout="wide"
 )
+# ============================================================
+# ПОИСК РАВНОВЕСИЯ НЭША
+# ============================================================
+
+def find_nash_equilibrium(payoffs):
+    """Находит чистые равновесия Нэша в игре 2×2."""
+
+    equilibria = []
+
+    for i in range(2):
+        for j in range(2):
+            a = payoffs[i][j][0]
+            b = payoffs[i][j][1]
+
+            best_a = all(
+                a >= payoffs[k][j][0]
+                for k in range(2)
+            )
+
+            best_b = all(
+                b >= payoffs[i][k][1]
+                for k in range(2)
+            )
+
+            if best_a and best_b:
+                equilibria.append((i, j))
+
+    return equilibria
 
 # ============================================================
 # ЗАГОЛОВОК
