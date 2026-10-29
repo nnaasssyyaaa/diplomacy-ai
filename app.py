@@ -1632,12 +1632,35 @@ elif section == "🤖 ИИ-ассистент":
                                 f"{len(equilibria)}"
                             )
 
+
+                            translations = {
+                                "Stay": "Остаться",
+                                "Leave": "Уйти",
+                                "stay": "Остаться",
+                                "leave": "Уйти"
+                            }
+
                             for i, j in equilibria:
+                                strategy_a = data["strategies_a"][i]
+                                strategy_b = data["strategies_b"][j]
+
+                                strategy_a = translations.get(
+                                    strategy_a.strip(), strategy_a
+                                )
+                                strategy_b = translations.get(
+                                    strategy_b.strip(), strategy_b
+                                )
+
                                 st.write(
                                     f"**Равновесие:** "
-                                    f"A — {data['strategies_a'][i]}, "
-                                    f"B — {data['strategies_b'][j]}"
+                                    f"A — {strategy_a}, "
+                                    f"B — {strategy_b}"
                                 )
+                                st.write(
+                                    f"**Выигрыши:** "
+                                    f"{tuple(payoffs[i][j])}"
+                                )
+                            
                                 st.write(
                                     f"**Выигрыши:** "
                                     f"{tuple(payoffs[i][j])}"
