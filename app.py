@@ -1661,10 +1661,7 @@ elif section == "🤖 ИИ-ассистент":
                                     f"{tuple(payoffs[i][j])}"
                                 )
                             
-                                st.write(
-                                    f"**Выигрыши:** "
-                                    f"{tuple(payoffs[i][j])}"
-                                )
+                            
                         else:
                             st.info(
                                 "Чистых равновесий Нэша нет. "
