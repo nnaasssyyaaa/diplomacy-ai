@@ -1603,40 +1603,43 @@ elif section == "🤖 ИИ-ассистент":
                         )
 
                         st.subheader(
+                           
+                        st.subheader(
                             "🧮 Математическая проверка"
                         )
+
                         translations = {
-    "Stay": "Остаться",
-    "Leave": "Уйти",
-    "stay": "Остаться",
-    "leave": "Уйти"
-}
+                            "Stay": "Остаться",
+                            "Leave": "Уйти",
+                            "stay": "Остаться",
+                            "leave": "Уйти"
+                        }
 
-strategies_a = [
-    translations.get(s.strip(), s)
-    for s in data["strategies_a"]
-]
+                        strategies_a = [
+                            translations.get(s.strip(), s)
+                            for s in data["strategies_a"]
+                        ]
 
-strategies_b = [
-    translations.get(s.strip(), s)
-    for s in data["strategies_b"]
-]
+                        strategies_b = [
+                            translations.get(s.strip(), s)
+                            for s in data["strategies_b"]
+                        ]
 
                         st.write("Матрица выигрышей:")
 
                         st.table([
                             [
                                 "Стратегия A / B",
-                                data["strategies_b"][0],
-                                data["strategies_b"][1]
+                                strategies_b[0],
+                                strategies_b[1]
                             ],
                             [
-                                data["strategies_a"][0],
+                                strategies_a[0],
                                 str(tuple(payoffs[0][0])),
                                 str(tuple(payoffs[0][1]))
                             ],
                             [
-                                data["strategies_a"][1],
+                                strategies_a[1],
                                 str(tuple(payoffs[1][0])),
                                 str(tuple(payoffs[1][1]))
                             ]
@@ -1648,41 +1651,22 @@ strategies_b = [
                                 f"{len(equilibria)}"
                             )
 
-
-                            translations = {
-                                "Stay": "Остаться",
-                                "Leave": "Уйти",
-                                "stay": "Остаться",
-                                "leave": "Уйти"
-                            }
-
                             for i, j in equilibria:
-                                strategy_a = data["strategies_a"][i]
-                                strategy_b = data["strategies_b"][j]
-
-                                strategy_a = translations.get(
-                                    strategy_a.strip(), strategy_a
-                                )
-                                strategy_b = translations.get(
-                                    strategy_b.strip(), strategy_b
-                                )
-
                                 st.write(
                                     f"**Равновесие:** "
-                                    f"A — {strategy_a}, "
-                                    f"B — {strategy_b}"
+                                    f"A — {strategies_a[i]}, "
+                                    f"B — {strategies_b[j]}"
                                 )
                                 st.write(
                                     f"**Выигрыши:** "
                                     f"{tuple(payoffs[i][j])}"
                                 )
-                            
-                            
                         else:
                             st.info(
                                 "Чистых равновесий Нэша нет. "
                                 "Возможно, существует смешанное равновесие."
                             )
+                               
 
                 except json.JSONDecodeError:
                     st.warning(
