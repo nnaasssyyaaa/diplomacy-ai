@@ -1519,6 +1519,7 @@ elif section == "🤖 ИИ-ассистент":
 Не представляй условные оценки как реальные данные.
 """
 
+             
                 try:
                     with st.spinner(
                         "ИИ анализирует ситуацию..."
@@ -1528,14 +1529,136 @@ elif section == "🤖 ИИ-ассистент":
                     st.subheader("📊 Результат анализа")
                     st.markdown(answer)
 
+                    # Просим ИИ извлечь матрицу из анализа
+                    matrix_prompt = f"""
+Извлеки из анализа ниже матрицу выигрышей 2x2.
+
+АНАЛИЗ:
+{answer}
+
+Верни только JSON в формате:
+{{
+  "strategies_a": ["Стратегия A1", "Стратегия A2"],
+  "strategies_b": ["Стратегия B1", "Стратегия B2"],
+  "payoffs": [
+    [[8, 8], [0, 6]],
+    [[6, 0], [0, 0]]
+  ]
+}}
+
+В каждой клетке два числа: [выигрыш A, выигрыш B].
+Используй числа из исходного анализа, не придумывай новые.
+Если матрицы нет, верни пустой JSON: {{}}.
+"""
+
+                    with st.spinner(
+                        "Проверяем равновесие математически..."
+                    ):
+                        matrix_raw = ask_ai(matrix_prompt)
+
+                    # Убираем оформление Markdown, если оно есть
+                    matrix_raw = matrix_raw.strip()
+
+                    if matrix_raw.startswith("```"):
+                        matrix_raw = matrix_raw.split("\n", 1)[1]
+                        matrix_raw = matrix_raw.rsplit(
+                            "```", 1
+                        )[0].strip()
+
+                    data = json.loads(matrix_raw)
+                    payoffs = data.get("payoffs", [])
+
+                    # Проверяем структуру матрицы
+                    valid = (
+                        isinstance(payoffs, list)
+                        and len(payoffs) == 2
+                        and all(
+                            isinstance(row, list)
+                            and len(row) == 2
+                            for row in payoffs
+                        )
+                        and all(
+                            isinstance(cell, list)
+                            and len(cell) == 2
+                            and all(
+                                isinstance(x, (int, float))
+                                and not isinstance(x, bool)
+                                for x in cell
+                            )
+                            for row in payoffs
+                            for cell in row
+                        )
+                        and len(data.get("strategies_a", [])) == 2
+                        and len(data.get("strategies_b", [])) == 2
+                    )
+
+                    if not valid:
+                        st.warning(
+                            "Не удалось прочитать матрицу. "
+                            "Попробуйте повторить анализ."
+                        )
+                    else:
+                        equilibria = find_nash_equilibrium(
+                            payoffs
+                        )
+
+                        st.subheader(
+                            "🧮 Математическая проверка"
+                        )
+
+                        st.write("Матрица выигрышей:")
+
+                        st.table([
+                            [
+                                "Стратегия A / B",
+                                data["strategies_b"][0],
+                                data["strategies_b"][1]
+                            ],
+                            [
+                                data["strategies_a"][0],
+                                str(tuple(payoffs[0][0])),
+                                str(tuple(payoffs[0][1]))
+                            ],
+                            [
+                                data["strategies_a"][1],
+                                str(tuple(payoffs[1][0])),
+                                str(tuple(payoffs[1][1]))
+                            ]
+                        ])
+
+                        if equilibria:
+                            st.success(
+                                "Найдено равновесий Нэша: "
+                                f"{len(equilibria)}"
+                            )
+
+                            for i, j in equilibria:
+                                st.write(
+                                    f"**Равновесие:** "
+                                    f"A — {data['strategies_a'][i]}, "
+                                    f"B — {data['strategies_b'][j]}"
+                                )
+                                st.write(
+                                    f"**Выигрыши:** "
+                                    f"{tuple(payoffs[i][j])}"
+                                )
+                        else:
+                            st.info(
+                                "Чистых равновесий Нэша нет. "
+                                "Возможно, существует смешанное равновесие."
+                            )
+
+                except json.JSONDecodeError:
+                    st.warning(
+                        "ИИ вернул матрицу в неверном формате. "
+                        "Повторите анализ."
+                    )
                 except Exception as e:
                     st.error(
-                        "Не удалось получить ответ от ИИ. "
-                        "Проверьте подключение и настройки."
+                        "Не удалось выполнить анализ или "
+                        "математическую проверку."
                     )
-                    st.caption(
-                        "Техническая информация об ошибке:"
-                    )
+                    st.caption("Техническая информация:")
                     st.code(str(e))
 
     # --------------------------------------------------------
