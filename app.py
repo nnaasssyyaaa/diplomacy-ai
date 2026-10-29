@@ -1605,6 +1605,22 @@ elif section == "🤖 ИИ-ассистент":
                         st.subheader(
                             "🧮 Математическая проверка"
                         )
+                        translations = {
+    "Stay": "Остаться",
+    "Leave": "Уйти",
+    "stay": "Остаться",
+    "leave": "Уйти"
+}
+
+strategies_a = [
+    translations.get(s.strip(), s)
+    for s in data["strategies_a"]
+]
+
+strategies_b = [
+    translations.get(s.strip(), s)
+    for s in data["strategies_b"]
+]
 
                         st.write("Матрица выигрышей:")
 
