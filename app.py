@@ -1602,7 +1602,6 @@ elif section == "🤖 ИИ-ассистент":
                             payoffs
                         )
 
-                        st.subheader(
                            
                         st.subheader(
                             "🧮 Математическая проверка"
